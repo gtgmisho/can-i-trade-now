@@ -6,7 +6,7 @@ export function AdSlot({ id, mode = ADS.mode }: { id: AdSlotId; mode?: AdMode })
   const def = ADS.slots[id];
   return (
     <aside
-      className={`ad-slot ad-${mode}`}
+      className={`ad-reserve ad-reserve-${mode}`}
       data-slot={id}
       data-network-slot={def.networkSlotId || undefined}
       aria-label="Advertisement"

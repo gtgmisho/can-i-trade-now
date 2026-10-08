@@ -1,7 +1,8 @@
-/* Reserved ad slots: height is fixed before any ad script runs => no CLS */
-.ad-slot { display: block; width: 100%; min-height: var(--ad-h-m, 280px); margin: 18px 0; contain: layout; overflow: hidden; }
-@media (min-width: 728px) { .ad-slot { min-height: var(--ad-h-d, 250px); } }
-.ad-placeholder { display: grid; place-items: center; border: 1px dashed #3b4658; border-radius: 12px; color: #8a96a8; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; }
+/* Reserved ad slots: height is fixed before any ad script runs => no CLS.
+   Named .ad-reserve so it never collides with the Adsterra .ad-slot banners from src/ads.ts. */
+.ad-reserve { display: block; width: 100%; min-height: var(--ad-h-m, 280px); margin: 18px 0; contain: layout; overflow: hidden; }
+@media (min-width: 728px) { .ad-reserve { min-height: var(--ad-h-d, 250px); } }
+.ad-reserve-placeholder { display: grid; place-items: center; border: 1px dashed #3b4658; border-radius: 12px; color: #8a96a8; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; }
 
 /* Affiliate CTA */
 .aff { margin: 18px 0; padding: 16px; border: 1px solid #2b3647; border-radius: 14px; background: #121925; }

@@ -138,7 +138,7 @@ export default function App() {
     <div className="app">
       <header className="top">
         <div className="brand">
-          <span className="logo" aria-hidden>◷</span>
+          <img className="logo" src="/icon.svg" alt="" width={44} height={44} />
           <div>
             <h1>{SITE}</h1>
             <p className="tag">ICT killzones, macros, Silver Bullet &amp; red-folder news in <b>your</b> time</p>

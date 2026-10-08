@@ -31,7 +31,7 @@ a { color: var(--accent); }
 /* header */
 .top { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; }
 .brand { display: flex; gap: 12px; align-items: center; }
-.logo { font-size: 30px; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 12px; background: linear-gradient(135deg, #1e3a8a, #0f766e); }
+.logo { width: 44px; height: 44px; display: block; flex-shrink: 0; }
 h1 { font-size: 20px; margin: 0; letter-spacing: -0.01em; }
 .tag { margin: 2px 0 0; color: var(--dim); font-size: 13px; }
 .clocks { display: flex; gap: 18px; }

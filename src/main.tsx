@@ -4,6 +4,7 @@ import './index.css'
 import './components/monetization.css'
 import { inject } from '@vercel/analytics'
 import App from './App.tsx'
+import { initAds } from './ads'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -12,6 +13,7 @@ createRoot(document.getElementById('root')!).render(
 )
 
 inject()
+initAds()
 
 if ('serviceWorker' in navigator && import.meta.env.PROD) {
   window.addEventListener('load', () => {
