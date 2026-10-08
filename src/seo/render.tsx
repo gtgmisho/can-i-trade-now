@@ -74,7 +74,8 @@ export function renderSite(input: RenderInput): RenderedFile[] {
   });
   files.push({
     file: 'robots.txt',
-    content: `User-agent: *\nAllow: /\nDisallow: /api/\n\nSitemap: ${siteUrl}/sitemap.xml\n`,
+    // /api/og must stay crawlable: social crawlers (e.g. Twitterbot) honour robots.txt when fetching og:image.
+    content: `User-agent: *\nAllow: /\nDisallow: /api/news\n\nSitemap: ${siteUrl}/sitemap.xml\n`,
   });
   return files;
 }

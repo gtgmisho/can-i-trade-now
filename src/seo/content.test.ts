@@ -92,7 +92,10 @@ describe('rendered site', { timeout: 60_000 }, () => {
     expect(locs).toHaveLength(html.length); // all pages minus 404, plus home
     expect(locs).toContain('https://example.com/');
     expect(locs).not.toContain('https://example.com/404');
-    expect(files.find((f) => f.file === 'robots.txt')!.content).toContain('Sitemap: https://example.com/sitemap.xml');
+    const robots = files.find((f) => f.file === 'robots.txt')!.content;
+    expect(robots).toContain('Sitemap: https://example.com/sitemap.xml');
+    // OG images are served from /api/og and must not be blocked for social crawlers
+    expect(robots).not.toMatch(/Disallow: \/api\/?$/m);
   });
 
   it('killzone pages link to sibling sessions, related cities and market hours', () => {
