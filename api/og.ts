@@ -14,6 +14,9 @@ const h = (type: string, style: Record<string, unknown>, children?: unknown, ext
 const pill = (text: string, bg: string, fg: string) =>
   h('div', { display: 'flex', padding: '12px 26px', borderRadius: 999, background: bg, color: fg, fontSize: 32, fontWeight: 700 }, `● ${text}`);
 
+/** Strip control chars and cap length so arbitrary query strings can't produce huge or broken images. */
+const clean = (v: string | null, max: number) => [...(v ?? '')].filter((ch) => ch >= ' ').join('').trim().slice(0, max);
+
 export default function handler(req: Request) {
   const url = new URL(req.url);
   const size = Number(url.searchParams.get('icon'));
@@ -21,6 +24,27 @@ export default function handler(req: Request) {
     return new ImageResponse(
       h('div', { display: 'flex', width: '100%', height: '100%' }, h('img', { width: size, height: size }, undefined, { src: ICON, width: size, height: size })) as never,
       { width: size, height: size, headers: { 'Cache-Control': 'public, max-age=31536000, immutable' } },
+    );
+  }
+  // Per-page cards for the static SEO pages: /api/og?title=...&sub=...
+  const title = clean(url.searchParams.get('title'), 60);
+  const sub = clean(url.searchParams.get('sub'), 80);
+  if (title) {
+    return new ImageResponse(
+      h(
+        'div',
+        { display: 'flex', flexDirection: 'column', justifyContent: 'center', width: '100%', height: '100%', padding: '0 80px', background: '#0a0d12', color: '#e6ebf2' },
+        [
+          h('div', { display: 'flex', alignItems: 'center', marginBottom: 34 }, [
+            h('img', {}, undefined, { src: ICON, width: 72, height: 72 }),
+            h('div', { display: 'flex', marginLeft: 18, fontSize: 30, color: '#8a96a8' }, 'Can I Trade Now? · ICT Killzone Clock'),
+          ]),
+          h('div', { display: 'flex', fontSize: title.length > 32 ? 64 : 80, fontWeight: 800, letterSpacing: -2, lineHeight: 1.1 }, title),
+          sub ? h('div', { display: 'flex', fontSize: 36, color: '#22c55e', marginTop: 32 }, sub) : h('div', { display: 'flex' }),
+          h('div', { display: 'flex', fontSize: 26, color: '#8a96a8', marginTop: 40 }, 'Live countdown · DST-adjusted · Free'),
+        ],
+      ) as never,
+      { width: 1200, height: 630, headers: { 'Cache-Control': 'public, max-age=86400, s-maxage=604800' } },
     );
   }
   return new ImageResponse(

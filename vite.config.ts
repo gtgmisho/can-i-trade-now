@@ -23,6 +23,15 @@ function mockNews(): Plugin {
   }
 }
 
-export default defineConfig({
+export default defineConfig(({ isSsrBuild }) => ({
   plugins: [react(), mockNews()],
-})
+  build: isSsrBuild
+    ? { outDir: 'dist-ssr', emptyOutDir: true }
+    : {
+        // manifest lets scripts/prerender.mjs find the hashed island bundle for the static SEO pages
+        manifest: true,
+        rolldownOptions: {
+          input: { main: 'index.html', seo: 'src/islands/seo.ts' },
+        },
+      },
+}))

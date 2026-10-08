@@ -1,6 +1,8 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
+import './components/monetization.css'
+import { inject } from '@vercel/analytics'
 import App from './App.tsx'
 
 createRoot(document.getElementById('root')!).render(
@@ -8,6 +10,8 @@ createRoot(document.getElementById('root')!).render(
     <App />
   </StrictMode>,
 )
+
+inject()
 
 if ('serviceWorker' in navigator && import.meta.env.PROD) {
   window.addEventListener('load', () => {

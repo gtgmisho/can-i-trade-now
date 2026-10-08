@@ -24,6 +24,8 @@ a { color: var(--accent); }
 .warn { color: var(--amber); }
 .ok { color: var(--green); font-size: 13px; align-self: center; }
 
+/* Reserve the first viewport for the client-rendered app so the static article below never jumps (CLS). */
+#root { min-height: 100vh; min-height: 100svh; }
 .app { max-width: 1040px; margin: 0 auto; padding: 16px 16px 24px; }
 
 /* header */
