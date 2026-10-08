@@ -76,11 +76,19 @@ describe('killzone local times across DST', () => {
     expect(r.start).toBe('00:00'); // Sun Mar 14 20:00 EDT = 00:00 GMT Monday
   });
 
-  it('Casablanca: Ramadan clock change (UTC+1 -> UTC+0) shows up as its own regime', () => {
+  it('Casablanca follows whatever the tz database says (its Ramadan rules differ between tzdata releases)', () => {
+    // tzdata 2025b has a Ramadan switch to UTC+0 in early 2027; 2026c keeps Casablanca on one offset all year.
+    // The pages are built from the runtime's tz data, so check our classification against that data, not a hard-coded rule.
+    const offsets = new Set<number>();
+    for (let d = ctx.from; d < ctx.to; d = d.plus({ days: 1 })) offsets.add(d.setZone('Africa/Casablanca').offset);
     const m = kz('new-york-pm', 'casablanca');
-    expect(m.relation).toBe('different-dates');
-    const feb = m.regimes.find((r) => r.first.year === 2027 && r.first.month === 2 && r.first.day > 1);
-    expect(feb?.start).toBe('18:30'); // EST 13:30 = 18:30 UTC = 18:30 local during Ramadan
+    if (offsets.size > 1) {
+      expect(m.relation).toBe('different-dates');
+    } else {
+      expect(m.relation).toBe('no-dst');
+      // fixed offset => local time moves only with US DST: exactly two variants, one hour apart
+      expect(m.variants).toHaveLength(2);
+    }
   });
 
   it('Cairo (DST reinstated 2023) is detected as changing clocks on other dates', () => {
