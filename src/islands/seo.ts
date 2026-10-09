@@ -5,6 +5,8 @@ import { inject } from '@vercel/analytics';
 import { isMarketOpen, nextMarketOpen, type WindowInstance } from '../lib/windows';
 import { fmtDuration } from '../lib/status';
 import { forexSessionsOpen, liveOrNext, nextMarketClose } from '../seo/times';
+import { placementCodes, type AdPlacement } from '../config/ads';
+import { enqueue, pick } from '../adsLoader';
 
 inject();
 
@@ -83,3 +85,14 @@ if (widgets.length) {
   run();
   setInterval(run, 1000);
 }
+
+// Ads: fill the server-rendered, height-reserved slots after the page has loaded so they never slow first paint.
+function loadAds() {
+  for (const slot of document.querySelectorAll<HTMLElement>('[data-placement]')) {
+    const code = pick(placementCodes(slot.dataset.placement as AdPlacement));
+    const box = slot.querySelector<HTMLElement>('.ad-box');
+    if (code && box && !box.hasChildNodes()) enqueue(code, box);
+  }
+}
+if (document.readyState === 'complete') setTimeout(loadAds, 300);
+else window.addEventListener('load', () => setTimeout(loadAds, 300));

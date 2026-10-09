@@ -27,7 +27,7 @@ Cities: `src/seo/data/cities.ts` · Sessions/copy: `src/seo/data/sessions.ts` ·
 ```sh
 npm run build   # tsc → vite build (SPA + island) → vite build --ssr (renderer) → scripts/prerender.mjs
 npm test        # vitest, incl. DST edge cases and content-quality checks
-npm run lighthouse  # Lighthouse CI against dist/ (budgets in lighthouserc.json); set CHROME_PATH if needed
+npm run lighthouse  # Lighthouse CI against dist/ (budgets in lighthouserc.json; the Adsterra ad host is blocked so budgets measure this site, not the ad network); set CHROME_PATH if needed
 ```
 
 Env vars at build time:
@@ -39,11 +39,13 @@ Env vars at build time:
 The pages print a 12-month DST schedule computed at build time. `.github/workflows/monthly-rebuild.yml` triggers a
 monthly redeploy if you add a Vercel Deploy Hook URL as the `VERCEL_DEPLOY_HOOK_URL` repo secret.
 
-## Monetization (placeholders — fill in yourself)
+## Monetization
 
-- **Ads**: `src/config/ads.ts`. `mode: 'off'` (default) renders nothing; `'placeholder'` shows labelled boxes;
-  `'live'` renders empty, height-reserved containers (`<aside class="ad-slot" data-slot=…>`) for your network's script.
-  Add the network script/`ads.txt` when approved.
+- **Ads (Adsterra)**: paste codes once in `src/ads.config.ts`. The home page (`src/ads.ts`) and the static SEO pages
+  both use them. On SEO pages, `src/config/ads.ts` maps the `in-content` slot to `top` and `below-faq` to `bottom`.
+  Each slot is rendered at build time with its height reserved (50px mobile / 90px from 760px), and the page island
+  loads the banner after page load. That means no layout shift and no first-paint cost. An empty code hides the slot.
+  `mode: 'placeholder'` shows empty boxes without loading ads; `'off'` removes them.
 - **Affiliate CTA**: `src/config/affiliates.ts`. Renders only when `enabled: true` and `url` is an `https://` link.
   Replace every `TODO` with partner-approved copy and the partner's required risk warning.
 

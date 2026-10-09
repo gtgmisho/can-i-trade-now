@@ -6,7 +6,6 @@ import { computeStatus, fmtDuration, relevantNews, type StatusCode } from './lib
 import { resolveTz, useSettings, type Settings } from './lib/settings';
 import { beep, notificationsSupported, useAlerts } from './lib/alerts';
 import { Timeline } from './components/Timeline';
-import { AdSlot } from './components/AdSlot';
 import { AffiliateCta } from './components/AffiliateCta';
 
 const SITE = 'Can I Trade Now?';
@@ -267,7 +266,6 @@ export default function App() {
       </section>
 
       <AffiliateCta placement="home" />
-      <AdSlot id="below-agenda" />
 
       <footer className="foot">
         <p>

@@ -1,8 +1,13 @@
-/* Reserved ad slots: height is fixed before any ad script runs => no CLS.
-   Named .ad-reserve so it never collides with the Adsterra .ad-slot banners from src/ads.ts. */
-.ad-reserve { display: block; width: 100%; min-height: var(--ad-h-m, 280px); margin: 18px 0; contain: layout; overflow: hidden; }
-@media (min-width: 728px) { .ad-reserve { min-height: var(--ad-h-d, 250px); } }
-.ad-reserve-placeholder { display: grid; place-items: center; border: 1px dashed #3b4658; border-radius: 12px; color: #8a96a8; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; }
+/* Reserved ad slots on the static pages. The .ad-box height equals the Adsterra banner height
+   (320x50 below 760px, 728x90 from 760px: the same breakpoint src/adsLoader.ts uses to pick a code),
+   so loading the banner never shifts the page (CLS).
+   Named .ad-reserve so it never collides with the home page's .ad-slot banners from src/ads.ts. */
+.ad-reserve { display: flex; flex-direction: column; align-items: center; gap: 4px; margin: 18px auto; max-width: 100%; overflow: hidden; contain: layout; }
+.ad-reserve .ad-label { font-size: 10px; line-height: 14px; text-transform: uppercase; letter-spacing: 0.08em; color: #8a96a8; }
+.ad-reserve .ad-box { width: 100%; height: 50px; display: flex; justify-content: center; overflow: hidden; }
+@media (min-width: 760px) { .ad-reserve .ad-box { height: 90px; } }
+.ad-reserve-placeholder .ad-box { max-width: 320px; align-items: center; border: 1px dashed #3b4658; border-radius: 8px; color: #8a96a8; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; }
+@media (min-width: 760px) { .ad-reserve-placeholder .ad-box { max-width: 728px; } }
 
 /* Affiliate CTA */
 .aff { margin: 18px 0; padding: 16px; border: 1px solid #2b3647; border-radius: 14px; background: #121925; }
