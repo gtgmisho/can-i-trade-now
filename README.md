@@ -1,32 +1,53 @@
-# React + TypeScript + Vite
+# Can I Trade Now? — ICT killzone clock
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Live ICT killzone / news-lock clock (React SPA at `/`) plus ~285 statically pre-rendered SEO pages.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Vite 8 + React 19 + TypeScript**, Luxon for all time math (IANA tz data → DST handled per city).
+- **Vercel**: static `dist/` + functions in `api/` (`news.ts` ForexFactory proxy, `og.ts` OG images via `@vercel/og`).
+- **Static SEO pages**: React components rendered to HTML at build time (no SSR at runtime). A ~1.4 kB
+  island (`src/islands/seo.ts`) drives the live countdowns; CSS is inlined so pages have no render-blocking requests.
 
-## React Compiler
+## Routes
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+| Route | Count | Source |
+| --- | --- | --- |
+| `/` | 1 | SPA (`index.html`, `src/App.tsx`) |
+| `/killzone`, `/killzone/[session]` | 1 + 5 | `src/seo/pages/pages.tsx` |
+| `/killzone/[session]/[city]` | 5 × 46 | ” |
+| `/market-hours`, `/market-hours/[city]` | 1 + 46 | ” |
+| `/is-forex-market-open-now` | 1 | ” |
+| `sitemap.xml`, `robots.txt`, `404.html` | — | `src/seo/render.tsx` |
 
-## Expanding the Oxlint configuration
+Cities: `src/seo/data/cities.ts` · Sessions/copy: `src/seo/data/sessions.ts` · Session times: `src/lib/windows.ts` (single source of truth).
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+## Build
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```sh
+npm run build   # tsc → vite build (SPA + island) → vite build --ssr (renderer) → scripts/prerender.mjs
+npm test        # vitest, incl. DST edge cases and content-quality checks
+npm run lighthouse  # Lighthouse CI against dist/ (budgets in lighthouserc.json); set CHROME_PATH if needed
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Env vars at build time:
+
+- `SITE_URL` – canonical origin for canonical tags, sitemap, robots and OG (default `https://can-i-trade-now.vercel.app`).
+  **Set this in Vercel once you add a custom domain.**
+- `BUILD_DATE` – optional ISO date the 12-month DST tables start from (default: now).
+
+The pages print a 12-month DST schedule computed at build time. `.github/workflows/monthly-rebuild.yml` triggers a
+monthly redeploy if you add a Vercel Deploy Hook URL as the `VERCEL_DEPLOY_HOOK_URL` repo secret.
+
+## Monetization (placeholders — fill in yourself)
+
+- **Ads**: `src/config/ads.ts`. `mode: 'off'` (default) renders nothing; `'placeholder'` shows labelled boxes;
+  `'live'` renders empty, height-reserved containers (`<aside class="ad-slot" data-slot=…>`) for your network's script.
+  Add the network script/`ads.txt` when approved.
+- **Affiliate CTA**: `src/config/affiliates.ts`. Renders only when `enabled: true` and `url` is an `https://` link.
+  Replace every `TODO` with partner-approved copy and the partner's required risk warning.
+
+## Analytics
+
+Vercel Web Analytics (`@vercel/analytics`, cookieless) is injected on the SPA and all static pages.
+Enable it in Vercel → Project → Analytics.

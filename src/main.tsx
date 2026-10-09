@@ -1,6 +1,8 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
+import './components/monetization.css'
+import { inject } from '@vercel/analytics'
 import App from './App.tsx'
 import { initAds } from './ads'
 
@@ -10,6 +12,7 @@ createRoot(document.getElementById('root')!).render(
   </StrictMode>,
 )
 
+inject()
 initAds()
 
 if ('serviceWorker' in navigator && import.meta.env.PROD) {
