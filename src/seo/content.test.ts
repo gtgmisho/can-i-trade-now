@@ -98,6 +98,13 @@ describe('rendered site', { timeout: 60_000 }, () => {
     expect(robots).not.toMatch(/Disallow: \/api\/?$/m);
   });
 
+  it('content pages carry the two height-reserved Adsterra slots', () => {
+    const p = html.find((f) => f.file === 'killzone/london-open/frankfurt.html')!.content;
+    expect(p).toContain('data-placement="top"');
+    expect(p).toContain('data-placement="bottom"');
+    expect(html.find((f) => f.file === '404.html')!.content).not.toContain('data-placement');
+  });
+
   it('killzone pages link to sibling sessions, related cities and market hours', () => {
     const p = html.find((f) => f.file === 'killzone/london-open/frankfurt.html')!.content;
     expect(p).toContain('href="/killzone/new-york-am/frankfurt"');

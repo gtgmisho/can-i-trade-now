@@ -12,7 +12,10 @@
       ],
       "numberOfRuns": 3,
       "settings": {
-        "chromeFlags": "--no-sandbox --headless=new"
+        "chromeFlags": "--no-sandbox --headless=new",
+        "blockedUrlPatterns": [
+          "*highrevenueformat.com*"
+        ]
       }
     },
     "assert": {
